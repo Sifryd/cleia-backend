@@ -1,5 +1,6 @@
 package fr.cleia.sia.web.controller;
 
+import fr.cleia.sia.application.usecase.ConsulterArborescence;
 import fr.cleia.sia.application.usecase.CreerArborescence;
 import fr.cleia.sia.web.dto.CreerArborescenceCommandeDTO;
 import jakarta.validation.Valid;
@@ -9,10 +10,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/fonds")
 public class ArborescenceController {
-    private final CreerArborescence useCase;
+    private final CreerArborescence creerUseCase;
+    private final ConsulterArborescence consulterUseCase;
 
-    public ArborescenceController(CreerArborescence useCase){
-        this.useCase = useCase;
+    public ArborescenceController(CreerArborescence creerUseCase,
+                                  ConsulterArborescence consulterUseCase) {
+        this.creerUseCase = creerUseCase;
+        this.consulterUseCase = consulterUseCase;
     }
 
     @PostMapping
@@ -35,7 +39,13 @@ public class ArborescenceController {
                 ).toList()
         );
 
-        var res = useCase.executer(commande);
+        var res = creerUseCase.executer(commande);
         return ResponseEntity.status(201).body(res);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> lire(@PathVariable("id") String id) {
+        var r = consulterUseCase.executer(id);
+        return ResponseEntity.ok(r);
     }
 }

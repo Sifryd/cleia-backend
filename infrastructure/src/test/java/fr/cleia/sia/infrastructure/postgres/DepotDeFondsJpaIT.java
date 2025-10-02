@@ -60,4 +60,19 @@ class DepotDeFondsJpaIT {
 
     }
 
+    @Test
+    void lis_un_fonds_persiste(){
+        var depot = new DepotDeFondsJPA(repository, mapper);
+        var fonds = new Fonds("F1", "Fonds A");
+        var dossier = new Dossier("D1", "Dossier A", "A-001");
+        dossier.ajouterPiece(new Piece("P1", "Pièce 1"));
+        fonds.ajouterDossier(dossier);
+        depot.sauvegarderFonds(fonds);
+
+        var lu = depot.findById("F1").orElseThrow();
+
+        assertThat(lu.dossiers()).hasSize(1);
+        assertThat(lu.dossiers().getFirst().pieces()).hasSize(1);
+    }
+
 }

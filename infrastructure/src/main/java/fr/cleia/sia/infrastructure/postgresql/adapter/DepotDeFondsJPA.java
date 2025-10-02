@@ -7,6 +7,8 @@ import fr.cleia.sia.infrastructure.postgresql.mapper.FondsMapper;
 import fr.cleia.sia.infrastructure.postgresql.repositories.FondsJPARepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class DepotDeFondsJPA implements DepotDeFonds {
     private final FondsJPARepository fondsJPARepository;
@@ -22,5 +24,10 @@ public class DepotDeFondsJPA implements DepotDeFonds {
         FondsEntity entity = fondsMapper.toEntity(fonds);
         fondsJPARepository.save(entity);
         return fonds;
+    }
+
+    @Override
+    public Optional<Fonds> findById(String identifiant) {
+        return fondsJPARepository.findById(identifiant).map(fondsMapper::toDomain);
     }
 }

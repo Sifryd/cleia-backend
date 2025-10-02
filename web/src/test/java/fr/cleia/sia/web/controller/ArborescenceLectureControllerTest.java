@@ -2,8 +2,6 @@ package fr.cleia.sia.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.cleia.sia.application.usecase.ConsulterArborescence;
-import fr.cleia.sia.application.usecase.CreerArborescence;
-import fr.cleia.sia.web.dto.CreerArborescenceCommandeDTO;
 import fr.cleia.sia.web.errors.ApiExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +13,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ArborescenceController.class)
 @Import(ApiExceptionHandler.class)
-class ErreursApiTest {
+class ArborescenceLectureControllerTest {
     @Autowired
     MockMvc mvc;
 
@@ -32,19 +28,24 @@ class ErreursApiTest {
     ObjectMapper mapper;
 
     @MockitoBean
-    CreerArborescence useCase;
+    fr.cleia.sia.application.usecase.ConsulterArborescence consulter;
 
     @MockitoBean
-    ConsulterArborescence consulter;
+    fr.cleia.sia.application.usecase.CreerArborescence creer;
 
     @Test
-    void renvoi_422_si_arborescence_incomplete() throws Exception{
-        when(useCase.executer(any())).thenThrow(new IllegalStateException("Arborescence incomplète"));
-        var body = new CreerArborescenceCommandeDTO("F1", "Fonds A",
-                List.of(new CreerArborescenceCommandeDTO.DossierDTO("D1", "Dossier A", "A-001", List.of())));
-        mvc.perform(post("/api/fonds").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").value(containsString("Arborescence incomplète")));
-
+        void get_retourne_200_avec_arborescence () throws Exception{
+        var res = new ConsulterArborescence.Resultat(
+                "F1", "Fonds A",
+                List.of(new ConsulterArborescence.Resultat.DossierR(
+                        "D1", "Dossier A", "A-001",
+                        List.of( new ConsulterArborescence.Resultat.PieceR("P1", "Pièce 1"))
+                ))
+        );
+        when(consulter.executer("F1")).thenReturn(res);
+        mvc.perform(get("/api/fonds/F1").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.identifiantFonds").value("F1"))
+                .andExpect(jsonPath("$.dossiers[0].pieces[0].identifiant").value("P1"));
     }
 }

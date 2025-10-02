@@ -4,6 +4,7 @@ import fr.cleia.sia.application.ports.DepotDeFonds;
 import fr.cleia.sia.domain.description.models.Fonds;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DepotDeFondsMemoire implements DepotDeFonds {
@@ -13,6 +14,11 @@ public class DepotDeFondsMemoire implements DepotDeFonds {
     public Fonds sauvegarderFonds(Fonds fonds) {
         store.put(fonds.identifiant(), fonds);
         return fonds;
+    }
+
+    @Override
+    public Optional<Fonds> findById(String identifiant) {
+        return Optional.empty();
     }
 
     public Fonds recupererFonds(String identifiant) {

@@ -28,6 +28,9 @@ class ArborescenceControllerTest {
     @MockitoBean
     CreerArborescence creerArborescence;
 
+    @MockitoBean
+    fr.cleia.sia.application.usecase.ConsulterArborescence consulter;
+
 
     @Test
     void post_creer_arborescence_retourne_201_avec_resultat() throws Exception {

@@ -26,6 +26,22 @@ public interface FondsMapper {
     @Mapping(target = "dossier",   ignore = true) // on le fixe dans @AfterMapping
     PieceEntity toEntity(fr.cleia.sia.domain.description.models.Piece source);
 
+    // dans FondsMapper
+    @Mapping(target = "identifiant", expression = "java(entity.getId())")
+    @Mapping(target = "intitule",    expression = "java(entity.getIntitule())")
+    @Mapping(target = "dossiers",    ignore = true)
+    fr.cleia.sia.domain.description.models.Fonds toDomain(FondsEntity entity);
+
+    @Mapping(target = "identifiant", expression = "java(entity.getId())")
+    @Mapping(target = "intitule",    expression = "java(entity.getIntitule())")
+    @Mapping(target = "cote",        expression = "java(entity.getCote())")
+    @Mapping(target = "pieces",      ignore = true)
+    fr.cleia.sia.domain.description.models.Dossier toDomain(DossierEntity entity);
+
+    @Mapping(target = "identifiant", expression = "java(entity.getId())")
+    @Mapping(target = "intitule",    expression = "java(entity.getIntitule())")
+    fr.cleia.sia.domain.description.models.Piece toDomain(PieceEntity entity);
+
     // Recâbler les back-references après mapping
     @AfterMapping
     default void wireParents(@MappingTarget FondsEntity target) {
@@ -35,6 +51,22 @@ public interface FondsMapper {
                 if (d.getPieces() != null) {
                     for (PieceEntity p : d.getPieces()) {
                         p.setDossier(d);
+                    }
+                }
+            }
+        }
+    }
+
+    @AfterMapping
+    default void populateDomainChildren(@MappingTarget fr.cleia.sia.domain.description.models.Fonds target, FondsEntity source) {
+        if (source.getDossiers() != null) {
+            for (DossierEntity d : source.getDossiers()) {
+                var dossier = toDomain(d);
+                target.ajouterDossier(dossier);
+                if (d.getPieces() != null) {
+                    for (PieceEntity p : d.getPieces()) {
+                        var piece = toDomain(p);
+                        dossier.ajouterPiece(piece);
                     }
                 }
             }

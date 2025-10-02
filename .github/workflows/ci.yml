@@ -2,48 +2,37 @@ name: CI
 
 on:
   push:
-    branches: [ "**" ]
+    branches: [ "main" ]
   pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build-test:
+  build:
     runs-on: ubuntu-latest
 
-    # Utile si tu utilises Testcontainers (Docker est dispo sur ubuntu-latest)
-    permissions:
-      contents: read
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Temurin JDK 25
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 25
-          cache: maven
+          java-version: 21
 
-      # (Optionnel) Si tu as des snapshots récents ou caches invalides
-      # - run: mvn -B -ntp -U -q help:evaluate -Dexpression=project.version
-
-      - name: Build & Test (unit + IT)
-        run: mvn -B -ntp -DskipTests=false verify
-
-      # Rapports tests en artefacts pour consultation rapide depuis l’UI GH
-      - name: Upload Surefire reports
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Cache Maven packages
+        uses: actions/cache@v4
         with:
-          name: surefire-reports
-          path: |
-            **/target/surefire-reports/**
-            **/target/failsafe-reports/**
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
-      # (Optionnel) JaCoCo -> publie le rapport HTML comme artefact
-      - name: Upload JaCoCo coverage (optional)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: "**/target/site/jacoco/**"
+      - name: Build & run tests
+        run: mvn -B verify
+
+  qodana:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Qodana Scan
+        uses: JetBrains/qodana-action@v2024.1

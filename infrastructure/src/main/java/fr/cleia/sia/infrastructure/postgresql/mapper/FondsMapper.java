@@ -34,7 +34,6 @@ public interface FondsMapper {
 
     @Mapping(target = "identifiant", expression = "java(entity.getId())")
     @Mapping(target = "intitule",    expression = "java(entity.getIntitule())")
-    @Mapping(target = "cote",        expression = "java(entity.getCote())")
     @Mapping(target = "pieces",      ignore = true)
     fr.cleia.sia.domain.description.models.Dossier toDomain(DossierEntity entity);
 

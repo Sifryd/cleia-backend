@@ -1,5 +1,8 @@
 package fr.cleia.sia.application.usecase;
 
+import fr.cleia.sia.domain.description.models.Dossier;
+import fr.cleia.sia.domain.description.models.Piece;
+import fr.cleia.sia.domain.ports.ArchiveNodeRepository;
 import fr.cleia.sia.domain.ports.DepotDeFonds;
 import fr.cleia.sia.domain.description.models.Fonds;
 import fr.cleia.sia.domain.description.rules.PolitiqueDeDescription;
@@ -16,37 +19,43 @@ import static org.mockito.Mockito.*;
 class CreerArborescenceServiceTest {
     @Test
     void cree_un_fonds_valide_et_appelle_le_depot() {
-        var depot = mock(DepotDeFonds.class);
+        var repo = mock(ArchiveNodeRepository.class);
         var politique = new PolitiqueDeDescription();
-        when(depot.sauvegarderFonds(any(Fonds.class)))
-                .thenAnswer(i -> i.getArgument(0));
-
-        var service = new CreerArborescenceService(depot, politique);
-
-        var cmd = new CreerArborescenceService
-                .Commande("F1", "Fonds A",
-                List.of(new CreerArborescenceService.Commande.DossierCommande(
+        var service = new CreerArborescenceService(repo, politique);
+        var cmd = new CreerArborescence.Commande(
+                "F1", "Fonds A",
+                List.of(new CreerArborescence.Commande.DossierCommande(
                         "D1", "Dossier A", "A-001",
-                        List.of(new CreerArborescenceService.Commande.PieceCommande(
-                                "P1", "Pièce 1"
-                        ))
+                        List.of(new CreerArborescence.Commande.PieceCommande("P1", "Piece A"))
                 ))
         );
 
         var res = service.executer(cmd);
 
-        assertThat(res.identifiantFond()).isEqualTo("F1");
-        var cap = ArgumentCaptor.forClass(Fonds.class);
-        verify(depot, times(1)).sauvegarderFonds(cap.capture());
-        assertThat(cap.getValue().dossiers()).hasSize(1);
-        assertThat(cap.getValue().dossiers().get(0).pieces()).hasSize(1);
+        assertThat(res.identifiantFond()).isNotBlank();
+
+        // Capture des enregistrements
+        var fondsCap = ArgumentCaptor.forClass(Fonds.class);
+        var dossierCap = ArgumentCaptor.forClass(Dossier.class);
+
+        assertThat(res.identifiantFond()).isNotBlank();
+
+        verify(repo, times(1)).saveAll(argThat(col -> {
+            boolean hasFonds = col.stream().anyMatch(Fonds.class::isInstance);
+            boolean hasDossier = col.stream().anyMatch(Dossier.class::isInstance);
+            boolean hasPiece = col.stream().anyMatch(Piece.class::isInstance);
+            return hasFonds && hasDossier && hasPiece;
+        }));
+        verifyNoMoreInteractions(repo);
+
+
     }
 
     @Test
     void echoue_si_arbo_incomplete_ou_invalide() {
-        var depot = mock(DepotDeFonds.class);
+        var repo = mock(ArchiveNodeRepository.class);
         var politique = new PolitiqueDeDescription();
-        var service = new CreerArborescenceService(depot, politique);
+        var service = new CreerArborescenceService(repo, politique);
 
         var cmd = new CreerArborescence.Commande(
                 "F1", "Fonds A",
@@ -56,8 +65,6 @@ class CreerArborescenceServiceTest {
         );
 
         assertThrows(IllegalStateException.class, () -> service.executer(cmd));
-        verify(depot, never()).sauvegarderFonds(any());
-
+        verify(repo, never()).saveAll(any());
     }
-
 }

@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface DepotDeFonds {
     Fonds sauvegarderFonds(Fonds fonds);
     Optional<Fonds> findById(NodeId identifiant);
-    void supprimerFonds(NodeId id);
+    void supprimerFonds(NodeId identifiant);
 }

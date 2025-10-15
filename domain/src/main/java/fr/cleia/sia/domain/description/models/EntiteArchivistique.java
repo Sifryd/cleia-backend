@@ -55,12 +55,6 @@ public sealed abstract class EntiteArchivistique permits Fonds, Dossier, Piece {
     public abstract EntiteArchivistique renommer(Title nouveauTitre);
     public abstract EntiteArchivistique deplacer(NodeId nouveauParentId, Depth newDepth);
 
-    protected final NodeId id() {return identifiant;}
-    protected final Depth depth() {return profondeur;}
-    protected final Title titre() {return intitule;}
-    protected final NodeId parent() {return parentId;}
-    protected final NodeType type() {return type;}
-
     @Override
     public String toString() {
         return "%s{id=%s, titre=%s, depth=%d, parent=%s}"

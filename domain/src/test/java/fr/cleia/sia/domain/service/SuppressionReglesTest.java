@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 class SuppressionReglesTest {
 
     @Test
-    void supprimer_noeuf_avec_enfants_est_interdit() {
+    void supprimer_noeud_avec_enfants_est_interdit() {
         var depotF = mock(DepotDeFonds.class);
         var depotD = mock(DepotDeDossier.class);
         var depotP = mock(DepotDePiece.class);
@@ -44,15 +44,22 @@ class SuppressionReglesTest {
         var service = new ArbreArchivistiqueService(finder, archiveNodeRepository);
 
         assertThatThrownBy(() -> service.supprimer(idD))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("Impossible de supprimer un noeud qui a des enfants");
+                .isInstanceOf(fr.cleia.sia.domain.description.exception.DomainException.class)
+                .satisfies(ex -> {
+                    var de = (fr.cleia.sia.domain.description.exception.DomainException) ex;
+                    org.assertj.core.api.Assertions.assertThat(de.error())
+                            .isEqualTo(fr.cleia.sia.domain.description.exception.DomainError.DELETE_HAS_CHILDREN);
+                    org.assertj.core.api.Assertions.assertThat(de.getMessage())
+                            .contains("Noeud a des enfants");
+                    org.assertj.core.api.Assertions.assertThat(de.context())
+                            .containsEntry("nodeId", idD.toString());
+                });
 
-
-        verify(depotD, never()).supprimerDossier(any());
+        verify(archiveNodeRepository, never()).deleteById(any());
     }
 
     @Test
-    void supprimer_noeuf_sans_enfants_est_autorise() {
+    void supprimer_noeud_sans_enfants_est_autorise() {
         var finder = mock(FinderDeNoeudArchivisitique.class);
         var archiveNodeRepository = mock(ArchiveNodeRepository.class);
 

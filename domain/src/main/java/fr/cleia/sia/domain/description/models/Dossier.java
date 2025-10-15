@@ -12,8 +12,8 @@ import java.util.List;
 public final class Dossier extends EntiteArchivistique {
     private final List<Piece> pieces = new ArrayList<>();
 
-    public Dossier(NodeId identifiant, NodeId identifianteParent,  Depth profondeur, Title intitule) {
-        super(identifiant, intitule, profondeur, identifianteParent, NodeType.DOSSIER);
+    public Dossier(NodeId identifiant, NodeId identifiantParent,  Depth profondeur, Title intitule) {
+        super(identifiant, intitule, profondeur, identifiantParent, NodeType.DOSSIER);
         if (profondeur.value() < 1) {
             throw new IllegalArgumentException("la profondeur d'un dossier doit étre >= 1");
         }
@@ -21,7 +21,7 @@ public final class Dossier extends EntiteArchivistique {
 
     @Override
     public EntiteArchivistique renommer(Title nouveauTitre) {
-        return new Dossier(id(), parent(), depth(), nouveauTitre);
+        return new Dossier(identifiant(), parentId(), getProfondeur(), nouveauTitre);
     }
 
     @Override
@@ -32,7 +32,7 @@ public final class Dossier extends EntiteArchivistique {
         if (nouvelleProfondeur.value() < 1) {
             throw new IllegalArgumentException("Profondeur invalide pour un Dossier");
         }
-        return new Dossier(id(), nouveauParentId, nouvelleProfondeur, titre());
+        return new Dossier(identifiant(), nouveauParentId, nouvelleProfondeur, getIntitule());
     }
 
 

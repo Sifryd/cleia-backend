@@ -1,6 +1,6 @@
 package fr.cleia.sia.infrastructure.memory;
 
-import fr.cleia.sia.application.ports.DepotDeFonds;
+import fr.cleia.sia.domain.ports.DepotDeFonds;
 import fr.cleia.sia.domain.description.models.Fonds;
 import org.junit.jupiter.api.Test;
 

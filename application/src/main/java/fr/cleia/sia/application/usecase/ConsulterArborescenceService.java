@@ -1,6 +1,6 @@
 package fr.cleia.sia.application.usecase;
 
-import fr.cleia.sia.application.ports.DepotDeFonds;
+import fr.cleia.sia.domain.ports.DepotDeFonds;
 
 public class ConsulterArborescenceService implements ConsulterArborescence{
     private final DepotDeFonds depotDeFonds;

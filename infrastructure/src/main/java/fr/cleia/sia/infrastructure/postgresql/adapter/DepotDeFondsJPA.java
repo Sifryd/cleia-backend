@@ -1,7 +1,8 @@
 package fr.cleia.sia.infrastructure.postgresql.adapter;
 
-import fr.cleia.sia.application.ports.DepotDeFonds;
+import fr.cleia.sia.domain.ports.DepotDeFonds;
 import fr.cleia.sia.domain.description.models.Fonds;
+import fr.cleia.sia.domain.vo.NodeId;
 import fr.cleia.sia.infrastructure.postgresql.entities.FondsEntity;
 import fr.cleia.sia.infrastructure.postgresql.mapper.FondsMapper;
 import fr.cleia.sia.infrastructure.postgresql.repositories.FondsJPARepository;
@@ -27,7 +28,7 @@ public class DepotDeFondsJPA implements DepotDeFonds {
     }
 
     @Override
-    public Optional<Fonds> findById(String identifiant) {
+    public Optional<Fonds> findById(NodeId identifiant) {
         return fondsJPARepository.findById(identifiant).map(fondsMapper::toDomain);
     }
 }

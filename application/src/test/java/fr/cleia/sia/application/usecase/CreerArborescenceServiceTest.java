@@ -1,6 +1,6 @@
 package fr.cleia.sia.application.usecase;
 
-import fr.cleia.sia.application.ports.DepotDeFonds;
+import fr.cleia.sia.domain.ports.DepotDeFonds;
 import fr.cleia.sia.domain.description.models.Fonds;
 import fr.cleia.sia.domain.description.rules.PolitiqueDeDescription;
 import org.junit.jupiter.api.Test;

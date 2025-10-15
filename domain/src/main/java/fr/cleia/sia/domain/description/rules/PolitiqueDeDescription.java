@@ -13,7 +13,7 @@ public class PolitiqueDeDescription {
             throw new IllegalStateException("Arborescence Incomplète : aucun dossier ne contient de pièce");
         }
     }
-
+/*
     public void verifierUniciteCotes(Fonds fonds) {
         Set<String> vues = new HashSet<>();
         fonds.dossiers().forEach(dossier ->
@@ -24,4 +24,6 @@ public class PolitiqueDeDescription {
             }
         });
     }
+
+ */
 }

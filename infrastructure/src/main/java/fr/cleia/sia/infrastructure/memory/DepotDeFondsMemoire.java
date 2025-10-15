@@ -1,7 +1,8 @@
 package fr.cleia.sia.infrastructure.memory;
 
-import fr.cleia.sia.application.ports.DepotDeFonds;
+import fr.cleia.sia.domain.ports.DepotDeFonds;
 import fr.cleia.sia.domain.description.models.Fonds;
+import fr.cleia.sia.domain.vo.NodeId;
 
 import java.util.Map;
 import java.util.Optional;
@@ -17,7 +18,7 @@ public class DepotDeFondsMemoire implements DepotDeFonds {
     }
 
     @Override
-    public Optional<Fonds> findById(String identifiant) {
+    public Optional<Fonds> findById(NodeId identifiant) {
         return Optional.empty();
     }
 

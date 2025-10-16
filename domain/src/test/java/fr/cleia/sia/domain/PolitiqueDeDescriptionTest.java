@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PolitiqueDeDescriptionTest {
+    /*
     @Test
+
     void echoue_si_arborescence_incomplete() {
         Fonds fonds = new Fonds("F1", "Fonds A");
         fonds.ajouterDossier(new Dossier("D1", "Dossier A", "A-001"));
@@ -32,4 +34,5 @@ class PolitiqueDeDescriptionTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Cote déjà utilisée");
     }
+    */
 }

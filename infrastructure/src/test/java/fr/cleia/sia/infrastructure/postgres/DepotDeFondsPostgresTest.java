@@ -1,6 +1,6 @@
 package fr.cleia.sia.infrastructure.postgres;
 
-import fr.cleia.sia.application.ports.DepotDeFonds;
+import fr.cleia.sia.domain.ports.DepotDeFonds;
 import fr.cleia.sia.domain.description.models.Fonds;
 import fr.cleia.sia.infrastructure.memory.DepotDeFondsMemoire;
 import org.junit.jupiter.api.BeforeAll;

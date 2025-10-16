@@ -1,6 +1,6 @@
 package fr.cleia.sia.web.config;
 
-import fr.cleia.sia.application.ports.DepotDeFonds;
+import fr.cleia.sia.domain.ports.DepotDeFonds;
 import fr.cleia.sia.application.usecase.ConsulterArborescence;
 import fr.cleia.sia.application.usecase.ConsulterArborescenceService;
 import fr.cleia.sia.application.usecase.CreerArborescence;

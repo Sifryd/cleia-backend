@@ -17,4 +17,8 @@ public record Depth(int value) {
         }
         return new Depth(result);
     }
+
+    public Depth minus(int delta){
+        return plus(-delta);
+    }
 }

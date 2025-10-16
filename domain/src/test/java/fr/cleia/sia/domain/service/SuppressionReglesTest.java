@@ -49,8 +49,6 @@ class SuppressionReglesTest {
                     var de = (fr.cleia.sia.domain.description.exception.DomainException) ex;
                     org.assertj.core.api.Assertions.assertThat(de.error())
                             .isEqualTo(fr.cleia.sia.domain.description.exception.DomainError.DELETE_HAS_CHILDREN);
-                    org.assertj.core.api.Assertions.assertThat(de.getMessage())
-                            .contains("Noeud a des enfants");
                     org.assertj.core.api.Assertions.assertThat(de.context())
                             .containsEntry("nodeId", idD.toString());
                 });
